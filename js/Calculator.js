@@ -7,7 +7,16 @@ function CalculatorScreen(props) {
     )
 }
 
+const operatorMap = {
+    '/': (firstOperand, secondOperand) => firstOperand / secondOperand,
+    '*': (firstOperand, secondOperand) => firstOperand * secondOperand,
+    '+': (firstOperand, secondOperand) => firstOperand + secondOperand,
+    '-': (firstOperand, secondOperand) => firstOperand - secondOperand,
+}
+
 export default class Calculator extends React.Component {
+
+
 
     state = {
         firstOperand: 0,
@@ -17,7 +26,7 @@ export default class Calculator extends React.Component {
          flag if you just click operator function button,
          it means you are going to input next operand
          */
-        isNextOperand:true,
+        isNextOperand: true,
     }
 
     handleButtonClick = (type, text, flag) => {
@@ -30,8 +39,16 @@ export default class Calculator extends React.Component {
 
             }
         } else if (type == 2) {
-            if (flag == 5) {
-                this.equalOperatorHandle();
+            if (this.state.operator) {
+                let preResult = parseFloat(this.state.result);
+                let preOperator = this.state.operator;
+                let nextResult = operatorMap[preOperator](this.state.firstOperand, preResult);
+                this.setState({
+                    result: nextResult,
+                    firstOperand: nextResult,
+                    operator: flag == '=' ? null : flag,
+                    isNextOperand: true,
+                });
             } else {
                 this.setState({
                     operator: flag,
@@ -40,14 +57,14 @@ export default class Calculator extends React.Component {
                 });
             }
         } else if (type == 3) {
-            let preResult = this.state.result;
+            let preResult = this.state.result.toString();
             if (this.state.isNextOperand) {
                 this.setState({
-                    result: text,
+                    result: text == "." ? "0." : text,
                     isNextOperand: false
                 });
             } else {
-                if (preResult != 0) {
+                if (preResult != "0") {
                     let newResult = preResult + "" + text;
                     if (!isNaN(newResult)) {
                         this.setState({
@@ -55,40 +72,13 @@ export default class Calculator extends React.Component {
                             isNextOperand: false
                         });
                     }
+                } else {
+                    this.setState({
+                        result: text,
+                        isNextOperand: false
+                    });
                 }
             }
-        }
-    }
-
-    equalOperatorHandle() {
-        if (this.state.operator) {
-            let preResult = parseFloat(this.state.result);
-            switch (this.state.operator) {
-                case 1:
-                    this.setState({
-                        result: this.state.firstOperand + preResult
-                    });
-                    break;
-                case 2:
-                    this.setState({
-                        result: this.state.firstOperand - preResult
-                    });
-                    break;
-                case 3:
-                    this.setState({
-                        result: this.state.firstOperand * preResult
-                    });
-                    break;
-                case 4:
-                    this.setState({
-                        result: this.state.firstOperand / preResult
-                    });
-                    break;
-                default :
-                    break;
-            }
-        } else {
-            return this.state.firstOperand
         }
     }
 
@@ -122,22 +112,22 @@ export default class Calculator extends React.Component {
                 {this.renderButton(1, "C", 1)}
                 {this.renderButton(1, "+/-", 2)}
                 {this.renderButton(1, "%", 3)}
-                {this.renderButton(2, "÷", 4)}
+                {this.renderButton(2, "÷", '/')}
                 {this.renderButton(3, "7")}
                 {this.renderButton(3, "8")}
                 {this.renderButton(3, "9")}
-                {this.renderButton(2, "×", 3)}
+                {this.renderButton(2, "×", '*')}
                 {this.renderButton(3, "4")}
                 {this.renderButton(3, "5")}
                 {this.renderButton(3, "6")}
-                {this.renderButton(2, "-", 2)}
+                {this.renderButton(2, "-", '-')}
                 {this.renderButton(3, "1")}
                 {this.renderButton(3, "2")}
                 {this.renderButton(3, "3")}
-                {this.renderButton(2, "+", 1)}
+                {this.renderButton(2, "+", '+')}
                 {this.renderButton(3, "0")}
-                {this.renderButton(3, ".")}
-                {this.renderButton(2, "=", 5)}
+                {this.renderButton(3, ".", '.')}
+                {this.renderButton(2, "=", '=')}
             </div>
         )
     }
