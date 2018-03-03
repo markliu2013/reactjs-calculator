@@ -1,0 +1,13 @@
+html {
+    font-size: 62.5%;
+}
+body {
+    margin: 0;
+    font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;
+    /*font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, sans-serif;*/
+    /*font-family: "Open Sans", "Droid Sans", Verdana, Arial, Helvetica;*/
+    /*font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;*/
+    /*font-family: 'Heiti SC', Droidsansfallback, "Microsoft YaHei", "STHeiti", SimHei, sans-serif;*/
+    /*font-family: "Trebuchet MS", Verdana, sans-serif;*/
+    font-weight: lighter;
+}
