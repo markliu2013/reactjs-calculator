@@ -24,9 +24,10 @@
     align-items: center;
     font-size: 3.2rem;
     cursor: pointer;
+    user-select: none;
 }
 .calculator-function {
-    background: #c4c5c7;
+    background: #bbb;
     color: #000;
 }
 .calculator-operator {
@@ -34,7 +35,7 @@
     color: #fff;
 }
 .calculator-number {
-    background: #cacbce;
+    background: #ccc;
     color: #000;
 }
 .calculator-zero {
