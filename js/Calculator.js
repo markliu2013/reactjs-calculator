@@ -7,16 +7,16 @@ function CalculatorScreen(props) {
     )
 }
 
+const operatorToFix = 1000000;
+
 const operatorMap = {
-    '/': (firstOperand, secondOperand) => firstOperand / secondOperand,
-    '*': (firstOperand, secondOperand) => firstOperand * secondOperand,
-    '+': (firstOperand, secondOperand) => firstOperand + secondOperand,
-    '-': (firstOperand, secondOperand) => firstOperand - secondOperand,
+    '/': (firstOperand, secondOperand) => (firstOperand * operatorToFix) / (secondOperand * operatorToFix),
+    '*': (firstOperand, secondOperand) => (firstOperand * operatorToFix) * (secondOperand * operatorToFix) / operatorToFix / operatorToFix,
+    '+': (firstOperand, secondOperand) => (firstOperand * operatorToFix + secondOperand*operatorToFix)/operatorToFix,
+    '-': (firstOperand, secondOperand) => (firstOperand * operatorToFix - secondOperand*operatorToFix)/operatorToFix,
 }
 
 export default class Calculator extends React.Component {
-
-
 
     state = {
         firstOperand: 0,
@@ -74,7 +74,7 @@ export default class Calculator extends React.Component {
                     }
                 } else {
                     this.setState({
-                        result: text,
+                        result: text == "." ? "0." : text,
                         isNextOperand: false
                     });
                 }
