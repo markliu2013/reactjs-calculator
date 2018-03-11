@@ -11,11 +11,13 @@ const operatorMap = {
 
 const CalculatorScreen = ({result}) => {
     let resultDisplay = result;
-    //if (Number.isNaN(result)) {
-    //    resultDisplay = "Not a number"
-    //} else {
-    //    resultDisplay = Number(result).toLocaleString("en-US", { maximumSignificantDigits: 10 });
-    //}
+    if (Number.isNaN(result)) {
+        resultDisplay = "Not a number"
+    } else {
+        if (resultDisplay !== "-0" && resultDisplay !== "0.") {
+            resultDisplay = Number(result).toLocaleString("en-US", { maximumSignificantDigits: 10 });
+        }
+    }
     return <div className="calculator-screen">{resultDisplay}</div>
 }
 
@@ -38,23 +40,71 @@ export default class Calculator extends React.Component {
          1+2=2+ not new result
          1+2+ should get result
          */
-        lastOperatorIsEqual: false
+        lastOperatorIsEqual: false,
+
+        /*
+        flag you clear button, AC, C
+         */
+        clearFlag: false,
+        /*
+        1+2, then clear, and clear
+         */
+        clearOperator: false
     }
 
     handleButtonClick = (type, text, flag) => {
         if (type == 1) {
             if (flag == 1) {
-
+                if (this.state.operator) {
+                    if (this.state.clearOperator) {
+                        this.setState({
+                            operator: null,
+                            lastClickedFlag: 1,
+                            result: "0",
+                            clearFlag: false,
+                            clearOperator: false
+                        });
+                    } else {
+                        this.setState({
+                            lastClickedFlag: 2,
+                            result: "0",
+                            clearFlag: false,
+                            clearOperator: true
+                        });
+                    }
+                } else {
+                    this.setState({
+                        result: "0",
+                        clearFlag: false
+                    });
+                }
             } else if (flag == 2) {
-
+                const stateResult = this.state.result;
+                if (stateResult === "0") {
+                    this.setState({
+                        result: "-0"
+                    });
+                } else if (stateResult === "-0") {
+                    this.setState({
+                        result: "0"
+                    });
+                } else {
+                    this.setState({
+                       result: Number(stateResult) * -1
+                    });
+                }
             } else if (flag == 3) {
-
+                const stateResult = this.state.result;
+                this.setState({
+                    result: Number(stateResult) / 100
+                });
             }
         } else if (type == 2) {
             if (this.state.operator) {
                 if (this.state.lastClickedFlag === 2 && flag !== '=') {//you just clicked operator, so just change operator
                     this.setState({
-                        operator: flag
+                        operator: flag,
+                        lastOperatorIsEqual: false
                     });
                     return;
                 }
@@ -67,7 +117,8 @@ export default class Calculator extends React.Component {
                     this.setState({
                         firstOperand: stateResult,
                         operator: flag,
-                        lastClickedFlag: 2
+                        lastClickedFlag: 2,
+                        lastOperatorIsEqual: false
                     });
                     return;
                 }
@@ -75,11 +126,10 @@ export default class Calculator extends React.Component {
                 let nextOperator = flag === '=' ? stateOperator : flag;
                 let nextPreSecondOperand = this.state.preSecondOperand;
                 //1+3==
-                if ( (this.state.lastClickedFlag === 3 ) && flag === '=') {//subsequent '='
+                if ((this.state.lastClickedFlag === 3 || this.state.lastOperatorIsEqual) && flag === '=') {//subsequent '='
                     nextResult = operatorMap[stateOperator](stateResult, this.state.preSecondOperand);
                     nextOperator = stateOperator;
                 } else {
-                    console.log(this.state.preSecondOperand);
                     nextResult = operatorMap[stateOperator](this.state.firstOperand, parseFloat(stateResult));
                     if (flag !== '=') {
                         nextPreSecondOperand = parseFloat(stateResult);
@@ -108,18 +158,21 @@ export default class Calculator extends React.Component {
                 if (preResult === "0") {
                     this.setState({
                         result: text,
+                        clearFlag: true
                     });
                 } else {//append
                     if (preResult.indexOf(".") < 0 || text !== ".") {// can't be more than 2 "." for number
                         this.setState({
-                            result: preResult + text
+                            result: preResult + text,
+                            clearFlag: true
                         });
                     }
                 }
             } else {//go new number to display
                 this.setState({
                     result: text === "." ? "0." : text,
-                    lastClickedFlag: 1
+                    lastClickedFlag: 1,
+                    clearFlag: true
                 });
             }
         }
@@ -147,15 +200,19 @@ export default class Calculator extends React.Component {
         if (type === 2 && flag === this.state.operator && this.state.lastClickedFlag === 2) {
             buttonClass.push("calculator-operator--active");
         }
+        let displayText = text;
+        if (type === 1 && flag === 1 && this.state.clearFlag) {
+            displayText = "C";
+        }
         return (
-            <div className={buttonClass.join(' ')} onClick={()=>this.handleButtonClick(type, text, flag)}>{text}</div>
+            <div className={buttonClass.join(' ')} onClick={()=>this.handleButtonClick(type, text, flag)}>{displayText}</div>
         )
     }
     render() {
         return (
             <div className="calculator">
                 <CalculatorScreen result={this.state.result} />
-                {this.renderButton(1, "C", 1)}
+                {this.renderButton(1, "AC", 1)}
                 {this.renderButton(1, "+/-", 2)}
                 {this.renderButton(1, "%", 3)}
                 {this.renderButton(2, "÷", '/')}
