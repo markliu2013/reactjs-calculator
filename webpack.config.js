@@ -1,6 +1,7 @@
 import path from 'path';
 
 module.exports = {
+	mode: 'development',
 	entry: [ path.resolve(__dirname, 'js', 'app.js') ],
 	output: {
 		path: '/js/',
