@@ -16,12 +16,4 @@ You can check result here: [https://codepen.io/markliu2013/pen/YaXXVG](https://c
 
 **NOTE:** You should start your mongodb service to run the application.
 
-Then visit [http://localhost:3000/](http://localhost:3000/)
-
-## Related modules
-
-1. [express](http://expressjs.com/) - MVC skeleton.
-2. [ejs](http://embeddedjs.com/) - View Template.
-3. [mongoose](http://mongoosejs.com/) - Database Driver for NodeJS
-4. [formidable](https://www.npmjs.org/package/formidable) - Parse file uploads data
-5. [tracklist](https://www.npmjs.org/package/tracklist) - Parse id3 track info from mp3 file
+Then visit [http://127.0.0.1:3000/](http://127.0.0.1:3000/)
